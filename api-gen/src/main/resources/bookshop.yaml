@@ -1,0 +1,208 @@
+openapi: 3.0.1
+info:
+  title: bookshop
+  version: v0
+servers:
+  - url: http://localhost:8080/books
+    description: umożliwia wyświetlenie, filtrowanie oraz kupienie książki przez zalogowaneg użytkownika.
+paths:
+  /updateBook/{id}:
+    put:
+      tags:
+        - book-controller
+      operationId: updateBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+  /addBook:
+    post:
+      tags:
+        - book-controller
+      operationId: createBook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+  /getBook:
+    get:
+      tags:
+        - book-controller
+      operationId: getBooks
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+  /getBookByGenre/{gen}:
+    get:
+      tags:
+        - book-controller
+      operationId: getBookByGenre
+      parameters:
+        - name: gen
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookResponse'
+  /getBook/{id}:
+    get:
+      tags:
+        - book-controller
+      operationId: getBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+  /deleteBook/{id}:
+    delete:
+      tags:
+        - book-controller
+      operationId: deleteBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+
+  /orderBooks:
+    get:
+      tags:
+        - book-controller
+      operationId: orderBooks
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookOrder'
+
+components:
+  schemas:
+    BookDto:
+      type: object
+      properties:
+        authorId:
+          type: string
+          format: uuid
+        bookName:
+          type: string
+        genre:
+          type: string
+        price:
+          type: number
+          format: double
+        numOfPages:
+          type: integer
+        numOfVisits:
+          type: integer
+        availableCopies:
+          type: integer
+    BookCreateRequest:
+      type: object
+      properties:
+        genre:
+          type: string
+        bookName:
+          type: string
+        price:
+          type: number
+          format: double
+        numOfPages:
+          type: integer
+        availableCopies:
+          type: integer
+        authorId:
+          type: string
+          format: uuid
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        bookName:
+          type: string
+        author:
+          $ref: '#/components/schemas/Author'
+        genre:
+          type: string
+        price:
+          type: number
+          format: double
+        numOfPages:
+          type: integer
+        availableCopies:
+          type: integer
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+    BookOrder:
+      type: object
+      properties:
+        bookId:
+          type: string
+          format: uuid
+        orderAmount:
+          type: integer
